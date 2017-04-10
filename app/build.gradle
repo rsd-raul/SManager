@@ -38,8 +38,9 @@ dependencies {
     compile 'com.android.support:support-annotations:26.0.0-alpha1'
 
     // Retrofit 2 - Square - https://github.com/square/retrofit
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:retrofit:2.2.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.2.0'
+//    compile 'com.squareup.okhttp3:okhttp:3.6.0'
 
     // MaterialDialogs -  Aidan Follestad - https://github.com/afollestad/material-dialogs
     compile 'com.afollestad.material-dialogs:commons:0.9.3.0'
