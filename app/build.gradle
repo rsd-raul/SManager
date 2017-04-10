@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.raul.rsd.android.smanager"
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testCompile 'junit:junit:4.12'
+
+
+    // Support - Google
+    compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    // Retrofit 2 - Square - https://github.com/square/retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+
+    // MaterialDialogs -  Aidan Follestad - https://github.com/afollestad/material-dialogs
+    compile 'com.afollestad.material-dialogs:commons:0.9.3.0'
+
+    // ButterKnife - Jake Wharton - https://github.com/JakeWharton/butterknife
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+
+    // Dagger 2 - Google - https://github.com/google/dagger/releases
+    compile 'com.google.dagger:dagger:2.10-rc2'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.10-rc2'
+
+    // FastAdapter - Mike Penz - https://github.com/mikepenz/FastAdapter
+    compile('com.mikepenz:fastadapter:2.1.7@aar') { transitive = true }
+    compile 'com.mikepenz:fastadapter-commons:2.1.0@aar'
+
+    // AHBottomNavigation - Aurelien Hubert - https://github.com/aurelhubert/ahbottomnavigation
+    compile 'com.aurelhubert:ahbottomnavigation:2.0.6'
+}
