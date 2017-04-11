@@ -1,7 +1,9 @@
-package com.raul.rsd.android.smanager;
+package com.raul.rsd.android.smanager.views;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.raul.rsd.android.smanager.App;
 
 public abstract class BaseActivity extends AppCompatActivity {
 

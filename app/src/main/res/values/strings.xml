@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">SManager</string>
     <string name="login">Login</string>
+    <string name="incorrect_user">Incorrect user</string>
+    <string name="incorrect_password">Incorrect password</string>
+    <string name="logout">Logout</string>
+    <string name="web_service">Web service</string>
+    <string name="hour_unit">H</string>
+    <string name="minute_unit">M</string>
+    <string name="tasks">Tasks</string>
 </resources>

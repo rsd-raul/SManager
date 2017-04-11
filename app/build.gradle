@@ -54,8 +54,8 @@ dependencies {
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10-rc2'
 
     // FastAdapter - Mike Penz - https://github.com/mikepenz/FastAdapter
-    compile('com.mikepenz:fastadapter:2.1.7@aar') { transitive = true }
-    compile 'com.mikepenz:fastadapter-commons:2.1.0@aar'
+    compile('com.mikepenz:fastadapter:2.5.1@aar') { transitive = true }
+    compile 'com.mikepenz:fastadapter-commons:2.5.0@aar'
 
     // AHBottomNavigation - Aurelien Hubert - https://github.com/aurelhubert/ahbottomnavigation
     compile 'com.aurelhubert:ahbottomnavigation:2.0.6'

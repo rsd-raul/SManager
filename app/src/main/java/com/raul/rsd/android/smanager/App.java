@@ -3,12 +3,14 @@ package com.raul.rsd.android.smanager;
 
 import android.app.Application;
 
+import com.raul.rsd.android.smanager.views.DashboardFragment;
+import com.raul.rsd.android.smanager.views.LoginFragment;
+import com.raul.rsd.android.smanager.views.MainActivity;
 import com.raul.rsd.android.smanager.helpers.PrimaryKeyHelper;
 
 import javax.inject.Singleton;
 import dagger.Component;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 public class App extends Application {
 
@@ -22,7 +24,9 @@ public class App extends Application {
     @Component(modules = AppModule.class)
     public interface AppComponent {
         void inject(App application);
-        void inject(LoginActivity loginActivity);
+        void inject(MainActivity mainActivity);
+        void inject(LoginFragment loginFragment);
+        void inject(DashboardFragment dashboardFragment);
 //        void inject(DashboardActivity dashboardActivity);
     }
 

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="hour_size">30sp</dimen>
+    <dimen name="minute_size">15sp</dimen>
+
+</resources>

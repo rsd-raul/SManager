@@ -2,6 +2,10 @@ package com.raul.rsd.android.smanager;
 
 import android.app.Application;
 import android.content.Context;
+
+import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
+import com.raul.rsd.android.smanager.adapters.CustomItem;
+
 import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
@@ -26,5 +30,10 @@ public class AppModule {
     @Provides
     Realm realmProvider(){
         return Realm.getDefaultInstance();
+    }
+
+    @Provides
+    FastItemAdapter<CustomItem> fastCustomItemAdapterProvider(){
+        return new FastItemAdapter<>();
     }
 }

@@ -9,13 +9,13 @@ public abstract class PreferencesHelper {
     // --------------------------- VALUES ----------------------------
 
     public abstract static class Keys{
-        // App settings
         public static final String FIRST_TIME = "first_time";
+        public static final String LOGGED_USER = "logged_user";
     }
 
     public abstract static class Defaults{
-        // App settings
         public static final boolean FIRST_TIME = true;
+        public static final int LOGGED_USER = -1;
     }
 
 
@@ -24,10 +24,18 @@ public abstract class PreferencesHelper {
     public static boolean getBoolean(Context context, String key, boolean defaultValue) {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(key, defaultValue);
     }
-
     public static void setBoolean(Context context, String key, boolean value) {
         SharedPreferences.Editor ed = PreferenceManager.getDefaultSharedPreferences(context).edit();
         ed.putBoolean(key, value);
+        ed.apply();                     // Beware: Background thread
+    }
+
+    public static long getLong(Context context, String key, long defaultValue) {
+        return PreferenceManager.getDefaultSharedPreferences(context).getLong(key, defaultValue);
+    }
+    public static void setLong(Context context, String key, long value) {
+        SharedPreferences.Editor ed = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        ed.putLong(key, value);
         ed.apply();                     // Beware: Background thread
     }
 }
