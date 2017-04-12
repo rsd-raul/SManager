@@ -1,6 +1,7 @@
 package com.raul.rsd.android.smanager.repositories;
 
 import com.raul.rsd.android.smanager.domain.Skill;
+import com.raul.rsd.android.smanager.domain.Task;
 import com.raul.rsd.android.smanager.domain.User;
 import com.raul.rsd.android.smanager.domain.User;
 import com.raul.rsd.android.smanager.helpers.PrimaryKeyHelper;
@@ -60,51 +61,21 @@ public class UserRepository implements BaseRepository<User> {
         return managedUser;
     }
 
-    // ---------------------------- SAVE -----------------------------
+    public void addTask(long id, Task task) {
+        realm.beginTransaction();
 
-//    public void UserModifier(final int uniqueParameterId, final User User, final Date date){
-//        realm.executeTransaction(new Realm.Transaction() {
-//            @Override
-//            public void execute(Realm realm) {
-//                switch (uniqueParameterId){
-//
-//                    case Constants.DASH_DONE:
-//                        User.setCompleted(!User.isCompleted());
-//                        break;
-//
-//                    case Constants.DASH_FAVE:
-//                        User.setStarred(!User.isStarred());
-//                        break;
-//
-//                    case Constants.DASH_DATE:
-//                        User.setDue(date);
-//                        break;
-//                }
-//            }
-//        });
-//    }
-//
-//    // --------------------------- Delete ----------------------------
-//
-//    @Override
-//    public void deleteById(final long id) {
-//        realm.executeTransaction(new Realm.Transaction() {
-//            @Override
-//            public void execute(Realm realm) {
-//                User User = realm.where(User.class).equalTo("id", id).findFirst();
-//                User.deleteFromRealm();
-//            }
-//        });
-//    }
-//
-//    @Override
-//    public void deleteByPosition(final int position) {
-//        realm.executeTransaction(new Realm.Transaction() {
-//            @Override
-//            public void execute(Realm realm) {
-//                RealmResults<User> results = realm.where(User.class).findAll();
-//                results.get(position).deleteFromRealm();
-//            }
-//        });
-//    }
+        User user = realm.where(User.class).equalTo("id", id).findFirst();
+        user.getTasks().add(task);
+
+        realm.commitTransaction();
+    }
+
+    public void addTaskToAdmin(Task task) {
+        realm.beginTransaction();
+
+        User user = realm.where(User.class).equalTo("userType", User.ADMIN).findFirst();
+        user.getTasks().add(task);
+
+        realm.commitTransaction();
+    }
 }

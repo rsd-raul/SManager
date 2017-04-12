@@ -34,6 +34,15 @@ public class User extends RealmObject {
 
     public User() { }
 
+    public User(long id, String name, String password, RealmList<Skill> skills, RealmList<Task> tasks, int userType) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.skills = skills;
+        this.userType = userType;
+        this.tasks = tasks;
+    }
+
     public User(long id, String name, String password, RealmList<Skill> skills, int userType) {
         this.id = id;
         this.name = name;

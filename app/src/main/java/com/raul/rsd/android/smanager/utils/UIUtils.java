@@ -16,11 +16,18 @@ public abstract class UIUtils {
     public static CharSequence getCustomDurationString(Context context, int totalMinutes){
         int hours = (int) Math.floor(totalMinutes/60.0);
         int minutes = totalMinutes%60;
-        String adjust = minutes<10 ? "0" : "";
 
         Resources resources = context.getResources();
-        String[] items = {String.valueOf(hours), context.getString(R.string.hour_unit),
-                adjust + String.valueOf(minutes), context.getString(R.string.minute_unit)};
+        String[] items = new String[hours > 0 ? 4 : 2];
+        if(hours > 0){
+            items[0] = String.valueOf(hours);
+            items[1] = context.getString(R.string.hour_unit);
+            items[2] = String.valueOf(minutes);
+            items[3] = context.getString(R.string.minute_unit);
+        } else {
+            items[0] = String.valueOf(minutes);
+            items[1] = context.getString(R.string.minute_unit);
+        }
 
         CharSequence finalText = "";
         for (int i = 0; i < items.length; i++) {

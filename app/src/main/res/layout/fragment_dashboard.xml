@@ -36,13 +36,13 @@
         tools:context=".view.MainActivity"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/main_rv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp" />
+            android:layout_height="match_parent" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

@@ -20,6 +20,13 @@ public class Task extends RealmObject {
 
     public Task() { }
 
+    public Task(long id, String description, Skill requiredSkill, int duration) {
+        this.id = id;
+        this.requiredSkill = requiredSkill;
+        this.duration = duration;
+        this.description = description;
+    }
+
     public Task(String description, Skill requiredSkill, int duration) {
         this.requiredSkill = requiredSkill;
         this.duration = duration;
