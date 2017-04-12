@@ -6,22 +6,12 @@ import com.raul.rsd.android.smanager.domain.Skill;
 import com.raul.rsd.android.smanager.domain.Task;
 import com.raul.rsd.android.smanager.domain.User;
 import com.raul.rsd.android.smanager.helpers.PrimaryKeyHelper;
-import com.raul.rsd.android.smanager.managers.DataManager;
-
-import javax.inject.Inject;
-
 import io.realm.Realm;
 import io.realm.RealmList;
 
 public class InitializeDatabaseTask extends AsyncTask<Void, Void, Void> {
 
     private static final String TAG = "MainActivity";
-    private Realm realm;
-
-    @Inject
-    InitializeDatabaseTask(Realm realm) {
-        this.realm = realm;
-    }
 
     @Override
     protected Void doInBackground(Void... voids) {
@@ -64,11 +54,6 @@ public class InitializeDatabaseTask extends AsyncTask<Void, Void, Void> {
         realm.commitTransaction();
 
         Log.i(TAG, "firstTimePopulation: Completed");
-
-        //TODO quitar
-        Log.e(TAG, "firstTimePopulation: " + realm.where(Task.class).findAll());
-        Log.e(TAG, "firstTimePopulation: " + realm.where(Skill.class).findAll());
-        Log.e(TAG, "firstTimePopulation: " + realm.where(User.class).findAll());
 
         return null;
     }

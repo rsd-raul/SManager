@@ -18,7 +18,6 @@ public abstract class PreferencesHelper {
         public static final int LOGGED_USER = -1;
     }
 
-
     // --------------------------- GETTERS ---------------------------
 
     public static boolean getBoolean(Context context, String key, boolean defaultValue) {

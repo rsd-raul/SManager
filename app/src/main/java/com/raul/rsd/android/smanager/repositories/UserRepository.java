@@ -21,7 +21,7 @@ public class UserRepository implements BaseRepository<User> {
     // ------------------------ Constructor --------------------------
 
     @Inject
-    public UserRepository(Realm realm) {
+    UserRepository(Realm realm) {
         this.realm = realm;
     }
 
@@ -45,7 +45,7 @@ public class UserRepository implements BaseRepository<User> {
         return realm.where(User.class).equalTo("skills.id", skill.getId()).findAll();
     }
 
-    // ----------------------------- Add -----------------------------
+    // ---------------------------- Save -----------------------------
 
     @Override
     public User save(final User User) {
@@ -60,6 +60,8 @@ public class UserRepository implements BaseRepository<User> {
 
         return managedUser;
     }
+
+    // ----------------------------- Add -----------------------------
 
     public void addTask(long id, Task task) {
         realm.beginTransaction();

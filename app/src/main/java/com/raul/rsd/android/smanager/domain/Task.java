@@ -11,12 +11,12 @@ public class Task extends RealmObject {
 
     @PrimaryKey
     private long id;
+    private boolean completed;
     private Skill requiredSkill;
     private int duration;
     private String description;
 
     // ------------------------- CONSTRUCTOR -------------------------
-
 
     public Task() { }
 
@@ -25,12 +25,14 @@ public class Task extends RealmObject {
         this.requiredSkill = requiredSkill;
         this.duration = duration;
         this.description = description;
+        completed = false;
     }
 
     public Task(String description, Skill requiredSkill, int duration) {
         this.requiredSkill = requiredSkill;
         this.duration = duration;
         this.description = description;
+        completed = false;
     }
 
     // ---------------------- GETTERS & SETTERS ----------------------
@@ -45,21 +47,19 @@ public class Task extends RealmObject {
     public Skill getRequiredSkill() {
         return requiredSkill;
     }
-    public void setRequiredSkill(Skill requiredSkill) {
-        this.requiredSkill = requiredSkill;
-    }
 
     public int getDuration() {
         return duration;
-    }
-    public void setDuration(int duration) {
-        this.duration = duration;
     }
 
     public String getDescription() {
         return description;
     }
-    public void setDescription(String description) {
-        this.description = description;
+
+    public boolean isCompleted() {
+        return completed;
+    }
+    public void setCompleted(boolean completed) {
+        this.completed = completed;
     }
 }

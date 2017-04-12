@@ -14,4 +14,12 @@
     <string name="task_duration">Duration (minutes)</string>
     <string name="type">Type</string>
     <string name="task_incomplete_toast">Introduce a description and a duration</string>
+    <string name="set_completed">Set the task as completed</string>
+    <string name="complete">Complete</string>
+    <string name="pending">Pending</string>
+    <string name="done">DONE</string>
+    <string name="set_pending">Mark task as pending</string>
+    <string name="zip">zip:</string>
+    <string name="not_available">Not available</string>
+    <string name="no_internet_query">We cannot query the server without an internet connection</string>
 </resources>

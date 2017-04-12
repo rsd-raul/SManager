@@ -3,30 +3,21 @@ package com.raul.rsd.android.smanager.views;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import com.raul.rsd.android.smanager.App;
 import com.raul.rsd.android.smanager.R;
 import com.raul.rsd.android.smanager.helpers.PreferencesHelper;
 import com.raul.rsd.android.smanager.helpers.PreferencesHelper.*;
-import com.raul.rsd.android.smanager.managers.DataManager;
 import com.raul.rsd.android.smanager.tasks.InitializeDatabaseTask;
-import javax.inject.Inject;
-import javax.inject.Provider;
 import io.realm.Realm;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends AppCompatActivity{
 
     // --------------------------- Values ----------------------------
 
-    private final int LOGIN = 0, DASHBOARD = 1;
     private static final String TAG = "MainActivity";
 
     // -------------------------- Injected ---------------------------
-
-    @Inject DataManager dataManager;
-    @Inject InitializeDatabaseTask initializeDatabaseTask;
-    @Inject Provider<DashboardFragment> dashboardFragmentProvider;
-    @Inject Provider<LoginFragment> loginFragmentProvider;
 
     // ------------------------- Constructor -------------------------
 
@@ -40,7 +31,7 @@ public class MainActivity extends BaseActivity {
             PreferencesHelper.setBoolean(this, Keys.FIRST_TIME, false);
 
             Log.i(TAG, "First Time Population - Starting");
-            initializeDatabaseTask.execute();
+            new InitializeDatabaseTask().execute();
             Log.i(TAG, "First Time Population - Completed");
         }
 
@@ -48,25 +39,15 @@ public class MainActivity extends BaseActivity {
         setFragment(userId);
     }
 
-    @Override
-    protected void inject(App.AppComponent component) {
-        component.inject(this);
-    }
-
     // -------------------------- Use Cases --------------------------
 
     public void setFragment(long userId) {
-        Fragment newFragment = null;
+        Fragment newFragment;
 
-        int keyConstant = userId == Defaults.LOGGED_USER ? LOGIN : DASHBOARD;
-        switch (keyConstant) {
-            case DASHBOARD:
-                newFragment = dashboardFragmentProvider.get();
-                break;
-            case LOGIN:
-                newFragment = loginFragmentProvider.get();
-                break;
-        }
+        if(userId == Defaults.LOGGED_USER)
+            newFragment = new LoginFragment();
+        else
+            newFragment = new DashboardFragment();
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_fragment_container, newFragment).commit();

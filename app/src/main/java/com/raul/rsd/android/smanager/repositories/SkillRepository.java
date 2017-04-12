@@ -18,7 +18,7 @@ public class SkillRepository implements BaseRepository<Skill> {
     // ------------------------ Constructor --------------------------
 
     @Inject
-    public SkillRepository(Realm realm) {
+    SkillRepository(Realm realm) {
         this.realm = realm;
     }
 
@@ -33,6 +33,8 @@ public class SkillRepository implements BaseRepository<Skill> {
     public RealmResults<Skill> findAll() {
         return realm.where(Skill.class).findAll();
     }
+
+    // ---------------------------- Save -----------------------------
 
     @Override
     public Skill save(Skill domain) {

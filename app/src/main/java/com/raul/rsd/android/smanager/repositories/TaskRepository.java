@@ -19,7 +19,7 @@ public class TaskRepository implements BaseRepository<Task> {
     // ------------------------ Constructor --------------------------
 
     @Inject
-    public TaskRepository(Realm realm) {
+    TaskRepository(Realm realm) {
         this.realm = realm;
     }
 
@@ -39,7 +39,7 @@ public class TaskRepository implements BaseRepository<Task> {
         return realm.where(User.class).contains("id", String.valueOf(userId)).findAll().get(0).getTasks();
     }
 
-    // ----------------------------- Add -----------------------------
+    // ---------------------------- Save -----------------------------
 
     @Override
     public Task save(final Task task) {
@@ -53,5 +53,15 @@ public class TaskRepository implements BaseRepository<Task> {
         realm.commitTransaction();
 
         return managedTask;
+    }
+
+    // ------------------------- Use Cases ---------------------------
+
+    public void changeTaskCompletion(long taskId) {
+        Task task = findOne(taskId);
+
+        realm.beginTransaction();
+        task.setCompleted(!task.isCompleted());
+        realm.commitTransaction();
     }
 }

@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.raul.rsd.android.smanager.R;
 import com.raul.rsd.android.smanager.domain.Location;
+import com.raul.rsd.android.smanager.domain.Resource;
+import com.raul.rsd.android.smanager.domain.Task;
 import com.raul.rsd.android.smanager.utils.UIUtils;
 
 import java.util.List;
@@ -22,14 +24,16 @@ public class CustomItem extends AbstractItem<CustomItem, CustomItem.ViewHolder> 
 
     // ------------------------- ATTRIBUTES --------------------------
 
-    private final int TASK = 0, RESOURCE = 1;
-    private int itemType;
+    public static final int TASK = 0;
+    private static final int RESOURCE = 1;
+    public int itemType;
 
     // Task Item
     public long id;
     private String description, type;
     private int time;
     private Context context;
+    public boolean completed;
 
     // Server Item
     private String farmName, farmerId, phone, zipCode;
@@ -42,23 +46,23 @@ public class CustomItem extends AbstractItem<CustomItem, CustomItem.ViewHolder> 
         this.context = context;
     }
 
-    public CustomItem withTask(long id, String description, String skillName, int time) {
-        this.id = id;
-        this.description = description;
-        this.type = skillName;
-        this.time = time;
+    public CustomItem withTask(Task task) {
+        this.id = task.getId();
+        this.description = task.getDescription();
+        this.type = task.getRequiredSkill().getName();
+        this.time = task.getDuration();
+        this.completed = task.isCompleted();
 
         itemType = TASK;
         return this;
     }
 
-    public CustomItem withResource(String farmName, String farmerId, String phone, String zipCode,
-                                   Location location) {
-        this.farmName = farmName;
-        this.farmerId = farmerId;
-        this.phone = phone;
-        this.zipCode = zipCode;
-        this.location = location;
+    public CustomItem withResource(Resource resource) {
+        this.farmName = resource.getFarm_name();
+        this.farmerId = resource.getFarmer_id();
+        this.phone = resource.getPhone1();
+        this.zipCode = resource.getZipcode();
+        this.location = resource.getLocation();
 
         itemType = RESOURCE;
         return this;
@@ -84,13 +88,23 @@ public class CustomItem extends AbstractItem<CustomItem, CustomItem.ViewHolder> 
         if(itemType == TASK) {
             viewHolder.description.setText(description);
             viewHolder.type.setText(type);
-            viewHolder.time.setText(UIUtils.getCustomDurationString(context, time));
+
+            CharSequence timeStr;
+            if(completed)
+                timeStr = context.getString(R.string.done);
+            else
+                timeStr = UIUtils.getCustomDurationString(context, time);
+            viewHolder.time.setText(timeStr);
         } else {
-            viewHolder.coordinates.setText(location.getLatitude() + "," + location.getLongitude());
-            viewHolder.zipCode.setText(zipCode);
-            viewHolder.farmName.setText(farmName);
-            viewHolder.phone.setText(phone);
-            viewHolder.farmerId.setText(farmerId);
+            String notAvailable = context.getString(R.string.not_available);
+
+            String aux = location.getLatitude() + "," + location.getLongitude();
+            viewHolder.coordinates.setText(aux != null ? aux : notAvailable);
+            aux = context.getString(R.string.zip) + " " + zipCode;
+            viewHolder.zipCode.setText(aux != null ? aux : notAvailable);
+            viewHolder.farmName.setText(farmName != null ? farmName : notAvailable);
+            viewHolder.phone.setText(phone != null ? phone : notAvailable);
+            viewHolder.farmerId.setText(farmerId != null ? farmerId : notAvailable);
         }
     }
 

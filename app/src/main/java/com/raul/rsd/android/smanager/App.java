@@ -24,10 +24,8 @@ public class App extends Application {
     @Component(modules = AppModule.class)
     public interface AppComponent {
         void inject(App application);
-        void inject(MainActivity mainActivity);
         void inject(LoginFragment loginFragment);
         void inject(DashboardFragment dashboardFragment);
-//        void inject(DashboardActivity dashboardActivity);
     }
 
     // ------------------------- CONSTRUCTOR -------------------------
@@ -50,5 +48,4 @@ public class App extends Application {
     public AppComponent getComponent() {
         return appComponent;
     }
-
 }

@@ -18,7 +18,6 @@ package com.raul.rsd.android.smanager.helpers;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 
 import com.raul.rsd.android.smanager.domain.Resource;
 
@@ -33,8 +32,6 @@ import retrofit2.http.Query;
 
 public abstract class NetworkHelper {
 
-    private static final String TAG = "NetworkHelper";
-
     // --------------------------- VALUES ----------------------------
 
     private static final String PEACHES = "Peaches";
@@ -42,7 +39,7 @@ public abstract class NetworkHelper {
     private static final String FILE = "hma6-9xbg.json";
 
     private static final String BASE_DATA_CT_URL = "http://data.ct.gov/";
-//    private static final String BASE_DATA_CT_URL = "https://data.ct.gov/"; // TODO: Server failure
+//    private static final String BASE_DATA_CT_URL = "https://data.ct.gov/"; // REVIEW: Server failure
 // javax.net.ssl.SSLException: SSL handshake aborted: ssl=0x7b2d9a38: I/O error during system call, Connection reset by peer
 
 
@@ -89,12 +86,11 @@ public abstract class NetworkHelper {
     /**
      * Check whether the device is connected to the internet or not
      *
-     * @param activity The activity you wish to check from
      * @return true if the device is connected, false otherwise
      */
-    public static boolean isNetworkAvailable(AppCompatActivity activity) {
+    public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
-                = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }

@@ -17,7 +17,7 @@ public class User extends RealmObject {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({ADMIN, TECH})
-    public @interface Type {}
+    @interface Type {}
 
     // ------------------------- ATTRIBUTES --------------------------
 
@@ -31,7 +31,6 @@ public class User extends RealmObject {
 
     // ------------------------- CONSTRUCTOR -------------------------
 
-
     public User() { }
 
     public User(long id, String name, String password, RealmList<Skill> skills, RealmList<Task> tasks, int userType) {
@@ -41,16 +40,6 @@ public class User extends RealmObject {
         this.skills = skills;
         this.userType = userType;
         this.tasks = tasks;
-    }
-
-    public User(long id, String name, String password, RealmList<Skill> skills, int userType) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.skills = skills;
-        this.userType = userType;
-
-        tasks = new RealmList<>();
     }
 
     // ---------------------- GETTERS & SETTERS ----------------------
@@ -72,28 +61,12 @@ public class User extends RealmObject {
     public String getPassword() {
         return password;
     }
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public RealmList<Skill> getSkills() {
-        return skills;
-    }
-    public void setSkills(RealmList<Skill> skills) {
-        this.skills = skills;
-    }
 
     public RealmList<Task> getTasks() {
         return tasks;
     }
-    public void setTasks(RealmList<Task> tasks) {
-        this.tasks = tasks;
-    }
 
     @Type public int getUserType() {
         return userType;
-    }
-    public void setUserType(@Type int userType) {
-        this.userType = userType;
     }
 }

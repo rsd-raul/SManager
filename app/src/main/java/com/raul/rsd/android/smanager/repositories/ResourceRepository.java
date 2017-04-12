@@ -16,7 +16,7 @@ public class ResourceRepository implements BaseRepository<Resource> {
     // ------------------------ Constructor --------------------------
 
     @Inject
-    public ResourceRepository(Realm realm) {
+    ResourceRepository(Realm realm) {
         this.realm = realm;
     }
 
@@ -32,7 +32,7 @@ public class ResourceRepository implements BaseRepository<Resource> {
         return realm.where(Resource.class).findAll();
     }
 
-    // ----------------------------- Add -----------------------------
+    // ---------------------------- Save -----------------------------
 
     @Override
     public Resource save(final Resource resource) {

@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_exit"
-        app:showAsAction="never"
-        android:orderInCategory="1"
-        android:title="@string/logout"/>
-    <item
         android:id="@+id/menu_tasks"
         app:showAsAction="never"
         android:orderInCategory="1"
@@ -17,4 +12,10 @@
         app:showAsAction="never"
         android:orderInCategory="1"
         android:title="@string/web_service"/>
+
+    <item
+        android:id="@+id/menu_exit"
+        app:showAsAction="never"
+        android:orderInCategory="1"
+        android:title="@string/logout"/>
 </menu>

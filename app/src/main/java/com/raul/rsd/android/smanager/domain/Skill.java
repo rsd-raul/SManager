@@ -5,9 +5,6 @@ import io.realm.annotations.PrimaryKey;
 
 public class Skill extends RealmObject {
 
-    // --------------------------- VALUES ----------------------------
-
-
     // ------------------------- ATTRIBUTES --------------------------
 
     @PrimaryKey
@@ -15,7 +12,6 @@ public class Skill extends RealmObject {
     private String name;
 
     // ------------------------- CONSTRUCTOR -------------------------
-
 
     public Skill() { }
 

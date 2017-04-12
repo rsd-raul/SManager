@@ -23,13 +23,14 @@ import butterknife.OnClick;
 
 public class LoginFragment extends Fragment {
 
+    // -------------------------- INJECTED ---------------------------
+
     @BindView(R.id.password_et) EditText passwordET;
     @BindView(R.id.username_et) EditText usernameET;
     @BindView(R.id.warning_tv) TextView warningTV;
     @Inject DataManager dataManager;
 
-    @Inject
-    public LoginFragment() { }
+    // ------------------------- CONSTRUCTOR -------------------------
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstState){
@@ -40,6 +41,8 @@ public class LoginFragment extends Fragment {
         ((App) getActivity().getApplication()).getComponent().inject(this);
         return view;
     }
+
+    // -------------------------- USE CASES --------------------------
 
     @OnClick(R.id.login_bn)
     void login(){

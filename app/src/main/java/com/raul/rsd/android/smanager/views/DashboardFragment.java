@@ -44,6 +44,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,7 +53,11 @@ import retrofit2.Response;
 
 public class DashboardFragment extends Fragment {
 
+    // --------------------------- VALUES ----------------------------
+
     private static final String TAG = "DashboardFragment";
+
+    // -------------------------- INJECTED ---------------------------
 
     @BindView(R.id.toolbar) Toolbar mToolbar;
     @BindView(R.id.main_rv) RecyclerView mRecyclerView;
@@ -59,13 +65,15 @@ public class DashboardFragment extends Fragment {
     @Inject DataManager mDataManager;
     @Inject FastItemAdapter<CustomItem> mFastAdapter;
     @Inject Provider<CustomItem> mCustomItemProvider;
+    @Inject Realm realm;
+
+    // ------------------------- ATTRIBUTES --------------------------
 
     private EditText descriptionET, durationET;
     private Spinner typeSP;
     private User activeUser;
 
-    @Inject
-    public DashboardFragment() { }
+    // ------------------------- CONSTRUCTOR -------------------------
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstState){
@@ -91,8 +99,9 @@ public class DashboardFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         mFastAdapter.withOnClickListener(new FastAdapter.OnClickListener<CustomItem>() {
             @Override
-            public boolean onClick(View v, IAdapter<CustomItem> adapter, CustomItem item, int position) {
-
+            public boolean onClick(View v, IAdapter<CustomItem> adapter, CustomItem item, int pos) {
+                if(item.itemType == CustomItem.TASK && activeUser.getUserType() == User.TECH)
+                    showTaskModifierDialog(item.id, item.completed);
                 return false;
             }
         });
@@ -106,6 +115,78 @@ public class DashboardFragment extends Fragment {
         });
     }
 
+    // -------------------------- INTERFACE --------------------------
+
+    private void adaptActionBar(){
+        mToolbar.inflateMenu(R.menu.dashboard_menu);
+        mToolbar.setTitle(activeUser.getName());
+        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+
+                    case R.id.menu_exit:
+                        // Log the user out by erasing its id.
+                        PreferencesHelper.setLong(getContext(), Keys.LOGGED_USER, Defaults.LOGGED_USER);
+
+                        // Back to the login page
+                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.replace(R.id.main_fragment_container, new LoginFragment()).commit();
+
+                        // Make sure to hide the FAB if the user was an Admin
+                        if(activeUser.getUserType() == User.ADMIN)
+                            getActivity().findViewById(R.id.fab).setVisibility(View.GONE);
+                        break;
+
+                    case R.id.menu_server:
+                        mSwipeRefresh.setEnabled(true);
+                        RealmResults<Resource> resources = mDataManager.findAllResources();
+                        if(resources.size() != 0)
+                            addResourcesToAdapter(resources);
+                        else
+                            loadFromServer();
+                        break;
+
+                    case R.id.menu_tasks:
+                        loadFromDatabase();
+                        break;
+                }
+                return false;
+            }
+        });
+
+        // Hide the button if TECH and do not customize the toolbar
+        View floatingActionButton = getActivity().findViewById(R.id.fab);
+        if(activeUser.getUserType() == User.TECH) {
+            floatingActionButton.setVisibility(View.GONE);
+            return;
+        }
+
+        // Show the button if the user is ADMIN and set the listener
+        floatingActionButton.setVisibility(View.VISIBLE);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showTaskCreationDialog();
+            }
+        });
+
+        // Get the ActionBar and customize color
+        mToolbar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+
+        // If the Android version allows, get the StatusBar and customize it
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+            return;
+
+        // Get StatusBar and customize color
+        Window window = getActivity().getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.colorAccentDark));
+    }
+
+    // -------------------------- USE CASES --------------------------
+
     private void loadFromDatabase(){
         mFastAdapter.clear();
         mSwipeRefresh.setEnabled(false);
@@ -115,13 +196,27 @@ public class DashboardFragment extends Fragment {
 
         // Insert the tasks in the RecyclerView
         for (Task task : activeUser.getTasks())
-            mFastAdapter.add(mCustomItemProvider.get().withTask(task.getId(), task.getDescription(),
-                    task.getRequiredSkill().getName(), task.getDuration()));
+            mFastAdapter.add(mCustomItemProvider.get().withTask(task));
+
+        activeUser.getTasks().where().findAllAsync().addChangeListener(new RealmChangeListener<RealmResults<Task>>() {
+            @Override
+            public void onChange(RealmResults<Task> tasks) {
+                List<CustomItem> customItems = new ArrayList<>();
+                for (Task task: tasks)
+                    customItems.add(mCustomItemProvider.get().withTask(task));
+                mFastAdapter.setNewList(customItems);
+            }
+        });
     }
 
-    private void loadFromServer(){
-        mSwipeRefresh.setRefreshing(true);
+    private void loadFromServer() {
+        if (!NetworkHelper.isNetworkAvailable(getContext())){
+            Toast.makeText(getContext(), R.string.no_internet_query, Toast.LENGTH_SHORT).show();
+            mSwipeRefresh.setRefreshing(false);
+            return;
+        }
 
+        mSwipeRefresh.setRefreshing(true);
         NetworkHelper.getRequestedResource(new Callback<List<Resource>>() {
             @Override
             public void onResponse(Call<List<Resource>> call, Response<List<Resource>> response) {
@@ -134,7 +229,6 @@ public class DashboardFragment extends Fragment {
                 addResourcesToAdapter(resources);
 
                 mDataManager.saveResources(resources);
-
                 mSwipeRefresh.setRefreshing(false);
             }
 
@@ -151,70 +245,7 @@ public class DashboardFragment extends Fragment {
         mToolbar.getMenu().findItem(R.id.menu_tasks).setVisible(true);
         mFastAdapter.clear();
         for (Resource res : resources)
-            mFastAdapter.add(mCustomItemProvider.get().withResource(res.getFarm_name(),
-                    res.getFarmer_id(), res.getPhone1(), res.getZipcode(), res.getLocation()));
-    }
-
-    private void adaptActionBar(){
-        mToolbar.inflateMenu(R.menu.dashboard_menu);
-        mToolbar.setTitle(activeUser.getName());
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.menu_exit:
-                        // Log the user out by erasing its id.
-                        PreferencesHelper.setLong(getContext(), Keys.LOGGED_USER, Defaults.LOGGED_USER);
-
-                        // Back to the login page
-                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        ft.replace(R.id.main_fragment_container, new LoginFragment()).commit();
-
-                        // Make sure to hide the FAB if the user was an Admin
-                        if(activeUser.getUserType() == User.ADMIN)
-                            getActivity().findViewById(R.id.fab).setVisibility(View.GONE);
-                        break;
-                    case R.id.menu_server:
-                        mSwipeRefresh.setEnabled(true);
-                        RealmResults<Resource> resources = mDataManager.findAllResources();
-                        if(resources.size() != 0)
-                            addResourcesToAdapter(resources);
-                        else
-                            loadFromServer();
-                        break;
-                    case R.id.menu_tasks:
-                        loadFromDatabase();
-                        break;
-                }
-                return false;
-            }
-        });
-
-        View floatingActionButton = getActivity().findViewById(R.id.fab);
-        if(activeUser.getUserType() == User.TECH) {
-            floatingActionButton.setVisibility(View.GONE);
-            return;
-        }
-
-        floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showTaskCreationDialog();
-            }
-        });
-
-        // Get the ActionBar and customize color
-        mToolbar.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-
-        // If the Android version allows, get the StatusBar and customize it
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-            return;
-
-        Window window = getActivity().getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+            mFastAdapter.add(mCustomItemProvider.get().withResource(res));
     }
 
     private void showTaskCreationDialog(){
@@ -236,14 +267,8 @@ public class DashboardFragment extends Fragment {
                         // Validate the data before saving, warn the user if wrong
                         if(description.length() == 0 || duration == 0)
                             Toast.makeText(getContext(), R.string.task_incomplete_toast, Toast.LENGTH_SHORT).show();
-                        else {
-                            Task saved = mDataManager.saveTask(
-                                                new Task(description, skill, duration));
-                            mFastAdapter.add(mCustomItemProvider.get().withTask(saved.getId()
-                                    , saved.getDescription()
-                                    , saved.getRequiredSkill().getName()
-                                    , saved.getDuration()));
-                        }
+                        else
+                            mDataManager.saveTask(new Task(description, skill, duration));
                     }
                 })
                 .build();
@@ -266,5 +291,19 @@ public class DashboardFragment extends Fragment {
         typeSP.setAdapter(adapter);
 
         dialog.show();
+    }
+
+    private void showTaskModifierDialog(final long taskId, boolean completed){
+        new MaterialDialog.Builder(getContext())
+                .title(completed ? R.string.set_pending : R.string.set_completed)
+                .positiveText(completed ? R.string.pending : R.string.complete)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        mDataManager.changeTaskCompletion(taskId);
+                    }
+                })
+                .negativeText(android.R.string.cancel)
+                .show();
     }
 }

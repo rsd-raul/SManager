@@ -13,11 +13,11 @@ import io.realm.Realm;
 
 
 @Module
-public class AppModule {
+class AppModule {
 
     private Application app;
 
-    public AppModule(Application app) {
+    AppModule(Application app) {
         this.app = app;
     }
 

@@ -22,7 +22,6 @@ public class Resource extends RealmObject {
 
     // ---------------------- GETTERS & SETTERS ----------------------
 
-
     public long getId() {
         return id;
     }
