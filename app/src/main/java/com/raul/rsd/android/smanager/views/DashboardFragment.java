@@ -260,7 +260,12 @@ public class DashboardFragment extends Fragment {
                         // Extract the info from the dialog
                         String description = descriptionET.getText().toString();
                         String durationStr = durationET.getText().toString();
-                        int duration = Integer.parseInt(durationStr);
+                        int duration = 0;
+                        try {
+                            duration = Integer.parseInt(durationStr);
+                        }catch (NumberFormatException ex){
+                            Log.e(TAG, "showTaskCreationDialog: onClick: ", ex);
+                        }
                         int position = typeSP.getSelectedItemPosition();
                         Skill skill = mDataManager.findAllSkills().get(position);
 
